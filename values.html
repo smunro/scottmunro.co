@@ -1,0 +1,1186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Values Exercise | Scott Munro</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Lora:wght@400;500;600;700&family=Nunito:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <style>
+        :root {
+            --color-primary: #4a6741;
+            --color-primary-light: #5d7d54;
+            --color-primary-dark: #3a5234;
+            --color-accent: #7c9a6e;
+            --color-accent-light: #9ab68d;
+            --color-warm: #c4a77d;
+            --color-warm-light: #e8dcc8;
+            --color-text: #3d4a3a;
+            --color-text-light: #5f6d5c;
+            --color-text-lighter: #8a9687;
+            --color-background: #fdfcfa;
+            --color-background-alt: #f6f4ef;
+            --color-background-dark: #ebe7df;
+            --color-border: #e0dcd4;
+            --color-success: #7c9a6e;
+            --color-danger: #c47d7d;
+            --font-heading: 'Lora', Georgia, serif;
+            --font-body: 'Nunito', -apple-system, BlinkMacSystemFont, sans-serif;
+            --shadow-sm: 0 1px 3px rgba(74, 103, 65, 0.06);
+            --shadow-md: 0 4px 12px rgba(74, 103, 65, 0.08);
+            --shadow-lg: 0 10px 30px rgba(74, 103, 65, 0.1);
+            --shadow-xl: 0 20px 50px rgba(74, 103, 65, 0.12);
+            --radius-sm: 6px;
+            --radius-md: 12px;
+            --radius-lg: 20px;
+            --radius-full: 9999px;
+            --transition: 0.3s ease;
+        }
+
+        *, *::before, *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        html {
+            scroll-behavior: smooth;
+            font-size: 16px;
+        }
+
+        body {
+            font-family: var(--font-body);
+            color: var(--color-text);
+            background-color: var(--color-background);
+            line-height: 1.7;
+            min-height: 100vh;
+        }
+
+        /* Header */
+        .header {
+            background-color: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid var(--color-border);
+            padding: 16px 24px;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .header-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .header a {
+            font-family: var(--font-heading);
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--color-primary);
+            text-decoration: none;
+        }
+
+        .back-link {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.9375rem !important;
+            font-family: var(--font-body) !important;
+            font-weight: 500 !important;
+            color: var(--color-text-light) !important;
+            transition: color var(--transition);
+        }
+
+        .back-link:hover {
+            color: var(--color-primary) !important;
+        }
+
+        .back-link svg {
+            width: 18px;
+            height: 18px;
+        }
+
+        /* Main Container */
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 40px 24px 80px;
+        }
+
+        /* Progress Bar */
+        .progress-container {
+            margin-bottom: 40px;
+        }
+
+        .progress-steps {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 12px;
+        }
+
+        .progress-step {
+            font-size: 0.8125rem;
+            font-weight: 500;
+            color: var(--color-text-lighter);
+            transition: color var(--transition);
+        }
+
+        .progress-step.active {
+            color: var(--color-primary);
+        }
+
+        .progress-step.completed {
+            color: var(--color-accent);
+        }
+
+        .progress-bar {
+            height: 6px;
+            background-color: var(--color-background-dark);
+            border-radius: var(--radius-full);
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--color-accent) 0%, var(--color-primary) 100%);
+            border-radius: var(--radius-full);
+            transition: width 0.5s ease;
+        }
+
+        /* Step Content */
+        .step-content {
+            display: none;
+        }
+
+        .step-content.active {
+            display: block;
+            animation: fadeIn 0.4s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Introduction */
+        .intro {
+            text-align: center;
+            padding: 40px 0;
+        }
+
+        .intro h1 {
+            font-family: var(--font-heading);
+            font-size: 2.5rem;
+            color: var(--color-primary);
+            margin-bottom: 16px;
+        }
+
+        .intro p {
+            font-size: 1.125rem;
+            color: var(--color-text-light);
+            max-width: 600px;
+            margin: 0 auto 32px;
+        }
+
+        .intro .attribution {
+            font-size: 0.875rem;
+            color: var(--color-text-lighter);
+            font-style: italic;
+            margin-top: 16px;
+        }
+
+        /* Buttons */
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 14px 32px;
+            font-size: 1rem;
+            font-weight: 600;
+            font-family: var(--font-body);
+            border-radius: var(--radius-md);
+            border: 2px solid transparent;
+            cursor: pointer;
+            transition: all var(--transition);
+        }
+
+        .btn-primary {
+            background-color: var(--color-primary);
+            color: white;
+            border-color: var(--color-primary);
+        }
+
+        .btn-primary:hover {
+            background-color: var(--color-primary-light);
+            border-color: var(--color-primary-light);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(74, 103, 65, 0.25);
+        }
+
+        .btn-secondary {
+            background-color: transparent;
+            color: var(--color-primary);
+            border-color: var(--color-primary);
+        }
+
+        .btn-secondary:hover {
+            background-color: var(--color-primary);
+            color: white;
+        }
+
+        .btn-outline {
+            background-color: transparent;
+            color: var(--color-text-light);
+            border-color: var(--color-border);
+        }
+
+        .btn-outline:hover {
+            border-color: var(--color-primary);
+            color: var(--color-primary);
+        }
+
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none !important;
+        }
+
+        /* Value Card (Swipe Phase) */
+        .swipe-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px 0;
+        }
+
+        .value-counter {
+            font-size: 0.875rem;
+            color: var(--color-text-lighter);
+            margin-bottom: 16px;
+        }
+
+        .value-card {
+            background: linear-gradient(145deg, var(--color-background-alt) 0%, var(--color-warm-light) 100%);
+            border-radius: var(--radius-lg);
+            padding: 60px 40px;
+            text-align: center;
+            width: 100%;
+            max-width: 400px;
+            box-shadow: var(--shadow-lg);
+            margin-bottom: 32px;
+            transition: transform 0.3s ease, opacity 0.3s ease;
+        }
+
+        .value-card.swiping-left {
+            transform: translateX(-100px) rotate(-10deg);
+            opacity: 0;
+        }
+
+        .value-card.swiping-right {
+            transform: translateX(100px) rotate(10deg);
+            opacity: 0;
+        }
+
+        .value-name {
+            font-family: var(--font-heading);
+            font-size: 2rem;
+            color: var(--color-primary);
+            margin-bottom: 8px;
+        }
+
+        .value-hint {
+            font-size: 0.9375rem;
+            color: var(--color-text-light);
+        }
+
+        .swipe-buttons {
+            display: flex;
+            gap: 24px;
+        }
+
+        .swipe-btn {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            border: 3px solid;
+            background-color: white;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all var(--transition);
+        }
+
+        .swipe-btn svg {
+            width: 36px;
+            height: 36px;
+        }
+
+        .swipe-btn.thumbs-down {
+            border-color: var(--color-danger);
+            color: var(--color-danger);
+        }
+
+        .swipe-btn.thumbs-down:hover {
+            background-color: var(--color-danger);
+            color: white;
+            transform: scale(1.1);
+        }
+
+        .swipe-btn.thumbs-up {
+            border-color: var(--color-success);
+            color: var(--color-success);
+        }
+
+        .swipe-btn.thumbs-up:hover {
+            background-color: var(--color-success);
+            color: white;
+            transform: scale(1.1);
+        }
+
+        .skip-link {
+            margin-top: 24px;
+            font-size: 0.875rem;
+            color: var(--color-text-lighter);
+            text-decoration: underline;
+            cursor: pointer;
+            background: none;
+            border: none;
+            font-family: var(--font-body);
+        }
+
+        .skip-link:hover {
+            color: var(--color-text-light);
+        }
+
+        /* Selected Values Display */
+        .selected-count {
+            text-align: center;
+            margin-top: 24px;
+            font-size: 0.9375rem;
+            color: var(--color-text-light);
+        }
+
+        .selected-count strong {
+            color: var(--color-primary);
+        }
+
+        /* Grouping Phase */
+        .grouping-intro {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .grouping-intro h2 {
+            font-family: var(--font-heading);
+            font-size: 1.75rem;
+            color: var(--color-primary);
+            margin-bottom: 12px;
+        }
+
+        .grouping-intro p {
+            color: var(--color-text-light);
+        }
+
+        .values-grid {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            justify-content: center;
+            margin-bottom: 40px;
+        }
+
+        .value-chip {
+            background-color: var(--color-background-alt);
+            border: 2px solid var(--color-border);
+            border-radius: var(--radius-full);
+            padding: 10px 20px;
+            font-size: 0.9375rem;
+            font-weight: 500;
+            color: var(--color-text);
+            cursor: pointer;
+            transition: all var(--transition);
+        }
+
+        .value-chip:hover {
+            border-color: var(--color-accent);
+            background-color: var(--color-warm-light);
+        }
+
+        .value-chip.selected {
+            background-color: var(--color-primary);
+            border-color: var(--color-primary);
+            color: white;
+        }
+
+        .value-chip.disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        /* Categories */
+        .categories-section {
+            margin-top: 48px;
+        }
+
+        .categories-title {
+            font-family: var(--font-heading);
+            font-size: 1.25rem;
+            color: var(--color-primary);
+            margin-bottom: 16px;
+            text-align: center;
+        }
+
+        .category-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 16px;
+            margin-bottom: 32px;
+        }
+
+        .category-card {
+            background-color: var(--color-background-alt);
+            border-radius: var(--radius-md);
+            padding: 20px;
+            text-align: center;
+            border: 2px solid transparent;
+            cursor: pointer;
+            transition: all var(--transition);
+        }
+
+        .category-card:hover {
+            border-color: var(--color-accent);
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-md);
+        }
+
+        .category-card.selected {
+            border-color: var(--color-primary);
+            background-color: var(--color-warm-light);
+        }
+
+        .category-icon {
+            font-size: 2rem;
+            margin-bottom: 8px;
+        }
+
+        .category-name {
+            font-weight: 600;
+            color: var(--color-primary);
+        }
+
+        .category-values {
+            font-size: 0.8125rem;
+            color: var(--color-text-lighter);
+            margin-top: 4px;
+        }
+
+        /* Narrowing Phase */
+        .narrowing-section h2 {
+            font-family: var(--font-heading);
+            font-size: 1.75rem;
+            color: var(--color-primary);
+            margin-bottom: 12px;
+            text-align: center;
+        }
+
+        .narrowing-section > p {
+            text-align: center;
+            color: var(--color-text-light);
+            margin-bottom: 32px;
+        }
+
+        .top-values-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 16px;
+            margin-bottom: 40px;
+        }
+
+        .top-value-card {
+            background-color: var(--color-background-alt);
+            border-radius: var(--radius-md);
+            padding: 24px 16px;
+            text-align: center;
+            border: 3px solid transparent;
+            cursor: pointer;
+            transition: all var(--transition);
+        }
+
+        .top-value-card:hover {
+            border-color: var(--color-accent-light);
+            transform: translateY(-4px);
+        }
+
+        .top-value-card.selected {
+            border-color: var(--color-primary);
+            background: linear-gradient(145deg, var(--color-warm-light) 0%, var(--color-background-alt) 100%);
+        }
+
+        .top-value-card.selected::after {
+            content: '1';
+            position: absolute;
+            top: -8px;
+            right: -8px;
+            width: 24px;
+            height: 24px;
+            background-color: var(--color-primary);
+            color: white;
+            border-radius: 50%;
+            font-size: 0.75rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .top-value-card {
+            position: relative;
+        }
+
+        .top-value-card.selected:nth-of-type(2)::after {
+            content: '2';
+        }
+
+        .top-value-card .value-name {
+            font-size: 1.25rem;
+            margin-bottom: 0;
+        }
+
+        /* Final Values Section */
+        .final-values {
+            text-align: center;
+            padding: 40px 0;
+        }
+
+        .final-values h2 {
+            font-family: var(--font-heading);
+            font-size: 2rem;
+            color: var(--color-primary);
+            margin-bottom: 24px;
+        }
+
+        .final-values-display {
+            display: flex;
+            justify-content: center;
+            gap: 24px;
+            margin-bottom: 40px;
+            flex-wrap: wrap;
+        }
+
+        .final-value-badge {
+            background: linear-gradient(145deg, var(--color-primary) 0%, var(--color-accent) 100%);
+            color: white;
+            padding: 20px 40px;
+            border-radius: var(--radius-lg);
+            font-family: var(--font-heading);
+            font-size: 1.5rem;
+            font-weight: 600;
+            box-shadow: var(--shadow-lg);
+        }
+
+        .reflection-preview {
+            background-color: var(--color-background-alt);
+            border-radius: var(--radius-lg);
+            padding: 32px;
+            text-align: left;
+            margin-bottom: 32px;
+        }
+
+        .reflection-preview h3 {
+            font-family: var(--font-heading);
+            font-size: 1.25rem;
+            color: var(--color-primary);
+            margin-bottom: 16px;
+        }
+
+        .reflection-preview ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .reflection-preview li {
+            padding: 12px 0;
+            border-bottom: 1px solid var(--color-border);
+            color: var(--color-text-light);
+            font-size: 0.9375rem;
+        }
+
+        .reflection-preview li:last-child {
+            border-bottom: none;
+        }
+
+        .btn-group {
+            display: flex;
+            gap: 16px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        /* Restart */
+        .restart-section {
+            text-align: center;
+            margin-top: 40px;
+            padding-top: 40px;
+            border-top: 1px solid var(--color-border);
+        }
+
+        /* Responsive */
+        @media (max-width: 600px) {
+            .intro h1 {
+                font-size: 2rem;
+            }
+
+            .value-card {
+                padding: 40px 24px;
+            }
+
+            .value-name {
+                font-size: 1.5rem;
+            }
+
+            .swipe-btn {
+                width: 64px;
+                height: 64px;
+            }
+
+            .swipe-btn svg {
+                width: 28px;
+                height: 28px;
+            }
+
+            .final-value-badge {
+                font-size: 1.25rem;
+                padding: 16px 28px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="header-content">
+            <a href="index.html">Scott Munro</a>
+            <a href="index.html" class="back-link">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M15 18l-6-6 6-6"></path>
+                </svg>
+                Back to Site
+            </a>
+        </div>
+    </header>
+
+    <main class="container">
+        <!-- Progress Bar -->
+        <div class="progress-container">
+            <div class="progress-steps">
+                <span class="progress-step active" data-step="1">Intro</span>
+                <span class="progress-step" data-step="2">Select</span>
+                <span class="progress-step" data-step="3">Narrow</span>
+                <span class="progress-step" data-step="4">Choose Two</span>
+                <span class="progress-step" data-step="5">Reflect</span>
+            </div>
+            <div class="progress-bar">
+                <div class="progress-fill" style="width: 10%"></div>
+            </div>
+        </div>
+
+        <!-- Step 1: Introduction -->
+        <div class="step-content active" id="step-1">
+            <div class="intro">
+                <h1>Discover Your Core Values</h1>
+                <p>This exercise will help you identify your two core values that guide your decisions, relationships, and life choices. It's based on Brene Brown's research and takes about 10-15 minutes.</p>
+                <p>You'll review over 100 values, select the ones that resonate with you, then narrow them down to your essential two.</p>
+                <button class="btn btn-primary" onclick="startExercise()">Begin the Exercise</button>
+                <p class="attribution">Based on "Dare to Lead" by Brene Brown</p>
+            </div>
+        </div>
+
+        <!-- Step 2: Swipe/Select Values -->
+        <div class="step-content" id="step-2">
+            <div class="swipe-container">
+                <div class="value-counter">
+                    <span id="current-value-num">1</span> of <span id="total-values">118</span>
+                </div>
+                <div class="value-card" id="value-card">
+                    <div class="value-name" id="current-value">Loading...</div>
+                    <div class="value-hint">Does this value resonate with you?</div>
+                </div>
+                <div class="swipe-buttons">
+                    <button class="swipe-btn thumbs-down" onclick="rejectValue()" title="Not for me">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                            <path d="M10 15v4a3 3 0 0 0 3 3l4-9V2H5.72a2 2 0 0 0-2 1.7l-1.38 9a2 2 0 0 0 2 2.3zm7-13h2.67A2.31 2.31 0 0 1 22 4v7a2.31 2.31 0 0 1-2.33 2H17"></path>
+                        </svg>
+                    </button>
+                    <button class="swipe-btn thumbs-up" onclick="acceptValue()" title="Resonates with me">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                            <path d="M14 9V5a3 3 0 0 0-3-3l-4 9v11h11.28a2 2 0 0 0 2-1.7l1.38-9a2 2 0 0 0-2-2.3zM7 22H4a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2h3"></path>
+                        </svg>
+                    </button>
+                </div>
+                <button class="skip-link" onclick="skipToNarrowing()">I have enough values selected, continue to narrowing</button>
+                <div class="selected-count">
+                    Selected: <strong><span id="selected-count">0</span></strong> values
+                </div>
+            </div>
+        </div>
+
+        <!-- Step 3: Narrow Down -->
+        <div class="step-content" id="step-3">
+            <div class="grouping-intro">
+                <h2>Narrow Your Values</h2>
+                <p>You selected <strong id="total-selected">0</strong> values. Now, choose your top <strong>10-15 values</strong> that feel most essential to who you are.</p>
+            </div>
+            <div class="values-grid" id="selected-values-grid">
+                <!-- Values will be populated here -->
+            </div>
+            <div class="selected-count">
+                Narrowed to: <strong><span id="narrowed-count">0</span></strong> / 15 values
+            </div>
+            <div class="btn-group" style="margin-top: 24px;">
+                <button class="btn btn-outline" onclick="goToStep(2)">Go Back</button>
+                <button class="btn btn-primary" id="continue-to-final" onclick="goToFinalSelection()" disabled>Continue</button>
+            </div>
+        </div>
+
+        <!-- Step 4: Choose Final Two -->
+        <div class="step-content" id="step-4">
+            <div class="narrowing-section">
+                <h2>Choose Your Two Core Values</h2>
+                <p>From your narrowed list, select the <strong>two values</strong> that are most essential to who you are and how you want to live your life.</p>
+                <div class="top-values-grid" id="final-values-grid">
+                    <!-- Top values will be populated here -->
+                </div>
+                <div class="selected-count">
+                    Selected: <strong><span id="final-count">0</span></strong> / 2 values
+                </div>
+                <div class="btn-group" style="margin-top: 24px;">
+                    <button class="btn btn-outline" onclick="goToStep(3)">Go Back</button>
+                    <button class="btn btn-primary" id="see-results" onclick="showResults()" disabled>See My Values</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Step 5: Results & Reflection -->
+        <div class="step-content" id="step-5">
+            <div class="final-values">
+                <h2>Your Core Values</h2>
+                <div class="final-values-display" id="final-values-display">
+                    <!-- Final values will be displayed here -->
+                </div>
+
+                <div class="reflection-preview">
+                    <h3>Reflection Questions for Your Values Worksheet</h3>
+                    <ul>
+                        <li>What are three behaviors that support each of your values?</li>
+                        <li>What are three behaviors that do NOT support each of your values?</li>
+                        <li>Describe a time when you were fully living in alignment with each value.</li>
+                        <li>What made it possible to live in that alignment?</li>
+                        <li>How might these values guide your decisions this week?</li>
+                        <li>Who in your life embodies these values? What can you learn from them?</li>
+                    </ul>
+                </div>
+
+                <div class="btn-group">
+                    <button class="btn btn-primary" onclick="generatePDF()">
+                        <svg style="width: 20px; height: 20px; margin-right: 8px;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3"></path>
+                        </svg>
+                        Download PDF Worksheet
+                    </button>
+                    <button class="btn btn-secondary" onclick="goToStep(4)">Change Values</button>
+                </div>
+
+                <div class="restart-section">
+                    <button class="btn btn-outline" onclick="restartExercise()">Start Over</button>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        // All values from Brene Brown's list
+        const ALL_VALUES = [
+            "Accountability", "Achievement", "Activism", "Adaptability", "Adventure",
+            "Altruism", "Ambition", "Authenticity", "Balance", "Beauty",
+            "Being the best", "Being a good sport", "Belonging", "Career", "Caring",
+            "Co-creation", "Collaboration", "Commitment", "Community", "Compassion",
+            "Competence", "Confidence", "Connection", "Contentment", "Contribution",
+            "Cooperation", "Courage", "Creativity", "Curiosity", "Dignity",
+            "Diversity", "Efficiency", "Environment", "Equality", "Ethics",
+            "Excellence", "Fairness", "Faith", "Family", "Financial stability",
+            "Forgiveness", "Freedom", "Friendship", "Fun", "Future generations",
+            "Generosity", "Giving back", "Grace", "Gratitude", "Growth",
+            "Harmony", "Health", "Heritage", "Home", "Honesty",
+            "Hope", "Humility", "Humor", "Inclusion", "Independence",
+            "Initiative", "Integrity", "Intuition", "Job security", "Joy",
+            "Justice", "Kindness", "Knowledge", "Leadership", "Learning",
+            "Legacy", "Leisure", "Love", "Loyalty", "Making a difference",
+            "Nature", "Openness", "Optimism", "Order", "Parenting",
+            "Patience", "Patriotism", "Peace", "Perseverance", "Personal fulfillment",
+            "Power", "Pride", "Recognition", "Reliability", "Resourcefulness",
+            "Respect", "Responsibility", "Risk-taking", "Security", "Self-discipline",
+            "Self-expression", "Self-respect", "Serenity", "Service", "Simplicity",
+            "Spirituality", "Stewardship", "Success", "Teamwork", "Thrift",
+            "Time", "Tradition", "Travel", "Trust", "Truth",
+            "Understanding", "Uniqueness", "Usefulness", "Vision", "Vulnerability",
+            "Wealth", "Wellbeing", "Wholeheartedness", "Wisdom"
+        ];
+
+        // State
+        let currentStep = 1;
+        let currentValueIndex = 0;
+        let selectedValues = [];
+        let narrowedValues = [];
+        let finalTwoValues = [];
+
+        // Initialize
+        document.getElementById('total-values').textContent = ALL_VALUES.length;
+
+        function updateProgress() {
+            const progressPercent = {
+                1: 10,
+                2: 30,
+                3: 55,
+                4: 75,
+                5: 100
+            };
+
+            document.querySelector('.progress-fill').style.width = progressPercent[currentStep] + '%';
+
+            document.querySelectorAll('.progress-step').forEach((step, index) => {
+                step.classList.remove('active', 'completed');
+                if (index + 1 === currentStep) {
+                    step.classList.add('active');
+                } else if (index + 1 < currentStep) {
+                    step.classList.add('completed');
+                }
+            });
+        }
+
+        function goToStep(step) {
+            document.querySelectorAll('.step-content').forEach(content => {
+                content.classList.remove('active');
+            });
+            document.getElementById(`step-${step}`).classList.add('active');
+            currentStep = step;
+            updateProgress();
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function startExercise() {
+            goToStep(2);
+            showCurrentValue();
+        }
+
+        function showCurrentValue() {
+            if (currentValueIndex < ALL_VALUES.length) {
+                document.getElementById('current-value').textContent = ALL_VALUES[currentValueIndex];
+                document.getElementById('current-value-num').textContent = currentValueIndex + 1;
+            } else {
+                // All values reviewed
+                skipToNarrowing();
+            }
+        }
+
+        function animateCard(direction) {
+            const card = document.getElementById('value-card');
+            card.classList.add(direction === 'left' ? 'swiping-left' : 'swiping-right');
+
+            setTimeout(() => {
+                card.classList.remove('swiping-left', 'swiping-right');
+                currentValueIndex++;
+                showCurrentValue();
+            }, 300);
+        }
+
+        function acceptValue() {
+            selectedValues.push(ALL_VALUES[currentValueIndex]);
+            document.getElementById('selected-count').textContent = selectedValues.length;
+            animateCard('right');
+        }
+
+        function rejectValue() {
+            animateCard('left');
+        }
+
+        function skipToNarrowing() {
+            if (selectedValues.length < 2) {
+                alert('Please select at least 2 values before continuing.');
+                return;
+            }
+
+            document.getElementById('total-selected').textContent = selectedValues.length;
+            renderSelectedValuesGrid();
+            goToStep(3);
+        }
+
+        function renderSelectedValuesGrid() {
+            const grid = document.getElementById('selected-values-grid');
+            grid.innerHTML = '';
+
+            selectedValues.forEach(value => {
+                const chip = document.createElement('div');
+                chip.className = 'value-chip';
+                chip.textContent = value;
+                chip.onclick = () => toggleNarrowedValue(value, chip);
+                grid.appendChild(chip);
+            });
+        }
+
+        function toggleNarrowedValue(value, chip) {
+            if (narrowedValues.includes(value)) {
+                narrowedValues = narrowedValues.filter(v => v !== value);
+                chip.classList.remove('selected');
+            } else {
+                if (narrowedValues.length >= 15) {
+                    alert('You can select up to 15 values. Please deselect one to add another.');
+                    return;
+                }
+                narrowedValues.push(value);
+                chip.classList.add('selected');
+            }
+
+            document.getElementById('narrowed-count').textContent = narrowedValues.length;
+            document.getElementById('continue-to-final').disabled = narrowedValues.length < 3;
+        }
+
+        function goToFinalSelection() {
+            if (narrowedValues.length < 2) {
+                alert('Please select at least 2 values to continue.');
+                return;
+            }
+
+            renderFinalValuesGrid();
+            goToStep(4);
+        }
+
+        function renderFinalValuesGrid() {
+            const grid = document.getElementById('final-values-grid');
+            grid.innerHTML = '';
+
+            narrowedValues.forEach(value => {
+                const card = document.createElement('div');
+                card.className = 'top-value-card';
+                card.innerHTML = `<div class="value-name">${value}</div>`;
+                card.onclick = () => toggleFinalValue(value, card);
+                grid.appendChild(card);
+            });
+        }
+
+        function toggleFinalValue(value, card) {
+            if (finalTwoValues.includes(value)) {
+                finalTwoValues = finalTwoValues.filter(v => v !== value);
+                card.classList.remove('selected');
+            } else {
+                if (finalTwoValues.length >= 2) {
+                    // Deselect first one and add new one
+                    const firstValue = finalTwoValues[0];
+                    finalTwoValues = [finalTwoValues[1], value];
+                    document.querySelectorAll('.top-value-card').forEach(c => {
+                        if (c.querySelector('.value-name').textContent === firstValue) {
+                            c.classList.remove('selected');
+                        }
+                    });
+                } else {
+                    finalTwoValues.push(value);
+                }
+                card.classList.add('selected');
+            }
+
+            // Update selection numbers
+            document.querySelectorAll('.top-value-card.selected').forEach((c, i) => {
+                c.style.setProperty('--selection-num', i + 1);
+            });
+
+            document.getElementById('final-count').textContent = finalTwoValues.length;
+            document.getElementById('see-results').disabled = finalTwoValues.length !== 2;
+        }
+
+        function showResults() {
+            const display = document.getElementById('final-values-display');
+            display.innerHTML = finalTwoValues.map(value =>
+                `<div class="final-value-badge">${value}</div>`
+            ).join('');
+
+            goToStep(5);
+        }
+
+        function generatePDF() {
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF();
+
+            const pageWidth = doc.internal.pageSize.getWidth();
+            const margin = 20;
+            const contentWidth = pageWidth - (margin * 2);
+            let y = margin;
+
+            // Title
+            doc.setFontSize(24);
+            doc.setTextColor(74, 103, 65);
+            doc.text('My Core Values', pageWidth / 2, y, { align: 'center' });
+            y += 15;
+
+            // Subtitle
+            doc.setFontSize(12);
+            doc.setTextColor(100, 100, 100);
+            doc.text('A Personal Values Reflection Worksheet', pageWidth / 2, y, { align: 'center' });
+            y += 20;
+
+            // Core Values
+            doc.setFontSize(18);
+            doc.setTextColor(74, 103, 65);
+            doc.text('Your Two Core Values:', margin, y);
+            y += 12;
+
+            doc.setFontSize(16);
+            doc.setTextColor(50, 50, 50);
+            finalTwoValues.forEach((value, i) => {
+                doc.text(`${i + 1}. ${value}`, margin + 10, y);
+                y += 10;
+            });
+            y += 15;
+
+            // Reflection Questions
+            const questions = [
+                {
+                    title: `Reflection on "${finalTwoValues[0]}"`,
+                    items: [
+                        'What does this value mean to you personally?',
+                        'List 3 behaviors that support this value:',
+                        '   1. ___________________________________',
+                        '   2. ___________________________________',
+                        '   3. ___________________________________',
+                        'List 3 behaviors that do NOT support this value:',
+                        '   1. ___________________________________',
+                        '   2. ___________________________________',
+                        '   3. ___________________________________',
+                        'Describe a time when you were fully living this value:',
+                        '________________________________________',
+                        '________________________________________',
+                        'What made it possible to live in that alignment?',
+                        '________________________________________'
+                    ]
+                },
+                {
+                    title: `Reflection on "${finalTwoValues[1]}"`,
+                    items: [
+                        'What does this value mean to you personally?',
+                        'List 3 behaviors that support this value:',
+                        '   1. ___________________________________',
+                        '   2. ___________________________________',
+                        '   3. ___________________________________',
+                        'List 3 behaviors that do NOT support this value:',
+                        '   1. ___________________________________',
+                        '   2. ___________________________________',
+                        '   3. ___________________________________',
+                        'Describe a time when you were fully living this value:',
+                        '________________________________________',
+                        '________________________________________',
+                        'What made it possible to live in that alignment?',
+                        '________________________________________'
+                    ]
+                }
+            ];
+
+            questions.forEach((section, sectionIndex) => {
+                // Check if we need a new page
+                if (y > 250) {
+                    doc.addPage();
+                    y = margin;
+                }
+
+                doc.setFontSize(14);
+                doc.setTextColor(74, 103, 65);
+                doc.text(section.title, margin, y);
+                y += 10;
+
+                doc.setFontSize(11);
+                doc.setTextColor(60, 60, 60);
+
+                section.items.forEach(item => {
+                    if (y > 280) {
+                        doc.addPage();
+                        y = margin;
+                    }
+                    doc.text(item, margin, y);
+                    y += 7;
+                });
+
+                y += 10;
+            });
+
+            // Final Section
+            if (y > 230) {
+                doc.addPage();
+                y = margin;
+            }
+
+            doc.setFontSize(14);
+            doc.setTextColor(74, 103, 65);
+            doc.text('Living Your Values', margin, y);
+            y += 10;
+
+            doc.setFontSize(11);
+            doc.setTextColor(60, 60, 60);
+            const finalQuestions = [
+                'How might these two values guide your decisions this week?',
+                '________________________________________',
+                '________________________________________',
+                '',
+                'Who in your life embodies these values? What can you learn from them?',
+                '________________________________________',
+                '________________________________________',
+                '',
+                'What is one small action you can take today to honor each value?',
+                `${finalTwoValues[0]}: ______________________________`,
+                `${finalTwoValues[1]}: ______________________________`
+            ];
+
+            finalQuestions.forEach(q => {
+                doc.text(q, margin, y);
+                y += 7;
+            });
+
+            // Footer
+            y = doc.internal.pageSize.getHeight() - 15;
+            doc.setFontSize(9);
+            doc.setTextColor(150, 150, 150);
+            doc.text('Based on the values exercise from "Dare to Lead" by Brene Brown', pageWidth / 2, y, { align: 'center' });
+            doc.text('Generated at scottmunro.com', pageWidth / 2, y + 5, { align: 'center' });
+
+            // Save
+            doc.save('my-core-values-worksheet.pdf');
+        }
+
+        function restartExercise() {
+            currentStep = 1;
+            currentValueIndex = 0;
+            selectedValues = [];
+            narrowedValues = [];
+            finalTwoValues = [];
+
+            document.getElementById('selected-count').textContent = '0';
+            document.getElementById('narrowed-count').textContent = '0';
+            document.getElementById('final-count').textContent = '0';
+
+            goToStep(1);
+        }
+
+        // Keyboard shortcuts
+        document.addEventListener('keydown', (e) => {
+            if (currentStep === 2) {
+                if (e.key === 'ArrowLeft' || e.key === 'ArrowDown') {
+                    rejectValue();
+                } else if (e.key === 'ArrowRight' || e.key === 'ArrowUp') {
+                    acceptValue();
+                }
+            }
+        });
+    </script>
+</body>
+</html>
