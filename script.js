@@ -368,3 +368,4 @@ function playEasterEgg() {
         easterEggPlaying = false;
     }, 3500);
 }
+    
