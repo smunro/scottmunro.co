@@ -144,9 +144,6 @@ contactForm.addEventListener('submit', async (e) => {
     e.preventDefault();
 
     const formData = new FormData(contactForm);
-    const data = Object.fromEntries(formData.entries());
-
-    // Get the submit button
     const submitBtn = contactForm.querySelector('button[type="submit"]');
     const originalText = submitBtn.textContent;
 
@@ -154,30 +151,36 @@ contactForm.addEventListener('submit', async (e) => {
     submitBtn.disabled = true;
     submitBtn.textContent = 'Sending...';
 
-    // Simulate form submission (replace with actual form handling)
-    // For production, integrate with Formspree, Netlify Forms, or your backend
     try {
-        await new Promise(resolve => setTimeout(resolve, 1500));
+        const response = await fetch('https://formspree.io/f/c63b3c65-b821-4383-9986-de525ae74876', {
+            method: 'POST',
+            body: formData,
+            headers: {
+                'Accept': 'application/json'
+            }
+        });
 
-        // Show success message
-        contactForm.innerHTML = `
-            <div class="form-success">
-                <div class="form-success-icon">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <path d="M20 6L9 17l-5-5"></path>
-                    </svg>
+        if (response.ok) {
+            // Show success message
+            contactForm.innerHTML = `
+                <div class="form-success">
+                    <div class="form-success-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M20 6L9 17l-5-5"></path>
+                        </svg>
+                    </div>
+                    <h3>Message Sent!</h3>
+                    <p>Thank you for reaching out. I'll get back to you within 24-48 hours.</p>
                 </div>
-                <h3>Message Sent!</h3>
-                <p>Thank you for reaching out. I'll get back to you within 24-48 hours.</p>
-            </div>
-        `;
-
-        console.log('Form submitted:', data);
+            `;
+        } else {
+            throw new Error('Form submission failed');
+        }
     } catch (error) {
         // Show error state
         submitBtn.disabled = false;
         submitBtn.textContent = originalText;
-        alert('There was an error sending your message. Please try again or email directly.');
+        alert('There was an error sending your message. Please try again or email smunro408@gmail.com directly.');
     }
 });
 
