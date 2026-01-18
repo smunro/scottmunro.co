@@ -152,15 +152,26 @@ contactForm.addEventListener('submit', async (e) => {
     submitBtn.textContent = 'Sending...';
 
     try {
-        const response = await fetch('https://formspree.io/f/c63b3c65-b821-4383-9986-de525ae74876', {
+        const response = await fetch('https://api.web3forms.com/submit', {
             method: 'POST',
-            body: formData,
             headers: {
+                'Content-Type': 'application/json',
                 'Accept': 'application/json'
-            }
+            },
+            body: JSON.stringify({
+                access_key: 'c63b3c65-b821-4383-9986-de525ae74876',
+                subject: 'New Contact from scottmunro.co',
+                from_name: 'Website Contact Form',
+                name: formData.get('name'),
+                email: formData.get('email'),
+                service: formData.get('service'),
+                message: formData.get('message')
+            })
         });
 
-        if (response.ok) {
+        const result = await response.json();
+
+        if (result.success) {
             // Show success message
             contactForm.innerHTML = `
                 <div class="form-success">
@@ -174,13 +185,14 @@ contactForm.addEventListener('submit', async (e) => {
                 </div>
             `;
         } else {
-            throw new Error('Form submission failed');
+            throw new Error(result.message || 'Form submission failed');
         }
     } catch (error) {
         // Show error state
         submitBtn.disabled = false;
         submitBtn.textContent = originalText;
         alert('There was an error sending your message. Please try again or email smunro408@gmail.com directly.');
+        console.error('Form error:', error);
     }
 });
 
@@ -368,4 +380,3 @@ function playEasterEgg() {
         easterEggPlaying = false;
     }, 3500);
 }
-    
